@@ -38,9 +38,17 @@ export async function POST(req: Request) {
     await fs.writeFile(outPath, buffer);
     return Response.json({ ok: true, url: `/uploads/${safeName}` });
   } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
     console.error("UPLOAD ERROR:", err);
+    // Mensaje más claro para el usuario (sin exponer detalles internos)
+    let userMessage = "Error subiendo archivo.";
+    if (message.includes("Cloudinary") || message.includes("credentials") || message.includes("Unauthorized")) {
+      userMessage = "Revisá CLOUDINARY_API_KEY y CLOUDINARY_API_SECRET en Vercel.";
+    } else if (message.includes("EACCES") || message.includes("read-only")) {
+      userMessage = "En Vercel hay que usar Cloudinary. Revisá las variables CLOUDINARY_*.";
+    }
     return Response.json(
-      { ok: false, error: "Error subiendo archivo." },
+      { ok: false, error: userMessage },
       { status: 500 }
     );
   }
