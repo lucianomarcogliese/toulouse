@@ -28,7 +28,7 @@ export async function PATCH(
     const all = await prisma.photo.findMany({
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
     });
-    const idx = all.findIndex((p) => p.id === id);
+    const idx = all.findIndex((p: { id: string }) => p.id === id);
     if (idx < 0) {
       return Response.json({ ok: false, error: "Foto no encontrada." }, { status: 404 });
     }
