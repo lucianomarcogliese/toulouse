@@ -17,7 +17,7 @@ function getUploadPreset(): string | null {
 
 export function isCloudinaryConfigured(): boolean {
   const hasPreset = getUploadPreset() && process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY;
-  return getConfig() !== null || hasPreset === true;
+  return getConfig() !== null || Boolean(hasPreset);
 }
 
 function ensureConfigured(): { cloudName: string; apiKey: string; apiSecret: string } {
