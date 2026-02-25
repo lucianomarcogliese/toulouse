@@ -6,6 +6,7 @@ import { getContentMap, pick } from "@/lib/content";
 import { getFeaturedPhotos } from "@/lib/photos";
 import { STATIC_IMAGE_BLUR } from "@/lib/blur";
 import type { Metadata } from "next";
+import type { GalleryPhoto } from "@/types";
 
 export const metadata: Metadata = {
   title: "Inicio",
@@ -159,7 +160,7 @@ export default async function HomePage() {
       >
         {destacados.length > 0 ? (
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {destacados.map((p) => (
+            {destacados.map((p: GalleryPhoto) => (
               <div
                 key={p.id}
                 className="overflow-hidden rounded-2xl bg-white shadow-sm transition duration-300 hover:scale-[1.02] hover:shadow-md"
