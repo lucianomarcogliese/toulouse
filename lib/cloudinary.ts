@@ -1,5 +1,4 @@
 import "server-only";
-import { Readable } from "stream";
 import { v2 as cloudinary } from "cloudinary";
 
 function getConfig() {
@@ -21,31 +20,29 @@ function ensureConfigured(): { cloudName: string; apiKey: string; apiSecret: str
 }
 
 /**
- * Sube un buffer a Cloudinary. Solo usar en servidor (credenciales).
+ * Sube un buffer a Cloudinary usando base64 (más estable en serverless/Vercel que stream).
  * @returns secure_url como url y public_id como publicId
  */
 export async function uploadImage(
   buffer: Buffer,
-  filename: string
+  _filename: string
 ): Promise<{ url: string; publicId: string }> {
   const { cloudName, apiKey, apiSecret } = ensureConfigured();
   cloudinary.config({ cloud_name: cloudName, api_key: apiKey, api_secret: apiSecret });
 
   const folder = process.env.CLOUDINARY_FOLDER ?? "toulouse";
+  const b64 = buffer.toString("base64");
+  const dataUri = `data:image/jpeg;base64,${b64}`;
 
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder },
-      (err, result) => {
-        if (err) return reject(err);
-        if (!result?.secure_url || !result?.public_id) {
-          return reject(new Error("Invalid Cloudinary response: missing secure_url or public_id"));
-        }
-        resolve({ url: result.secure_url, publicId: result.public_id });
-      }
-    );
-    Readable.from(buffer).pipe(stream);
+  const result = await cloudinary.uploader.upload(dataUri, {
+    folder,
+    resource_type: "image",
   });
+
+  if (!result?.secure_url || !result?.public_id) {
+    throw new Error("Invalid Cloudinary response: missing secure_url or public_id");
+  }
+  return { url: result.secure_url, publicId: result.public_id };
 }
 
 /**
