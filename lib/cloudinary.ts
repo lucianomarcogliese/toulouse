@@ -28,8 +28,8 @@ function ensureConfigured(): { cloudName: string; apiKey: string; apiSecret: str
 
 /**
  * Sube un buffer a Cloudinary.
- * Si CLOUDINARY_UPLOAD_PRESET está definido, usa upload unsigned (no requiere API Secret correcto).
- * Si no, usa upload firmado con API Secret.
+ * Si CLOUDINARY_UPLOAD_PRESET está definido, usa upload unsigned (no requiere API Secret).
+ * Si no hay preset, usa upload firmado (requiere API Secret correcto).
  */
 export async function uploadImage(
   buffer: Buffer,
@@ -43,22 +43,31 @@ export async function uploadImage(
     return uploadUnsigned(buffer, cloudName, apiKey, preset);
   }
 
-  const { cloudName: cn, apiKey: key, apiSecret: secret } = ensureConfigured();
-  cloudinary.config({ cloud_name: cn, api_key: key, api_secret: secret });
-
-  const folder = process.env.CLOUDINARY_FOLDER ?? "toulouse";
-  const b64 = buffer.toString("base64");
-  const dataUri = `data:image/jpeg;base64,${b64}`;
-
-  const result = await cloudinary.uploader.upload(dataUri, {
-    folder,
-    resource_type: "image",
-  });
-
-  if (!result?.secure_url || !result?.public_id) {
-    throw new Error("Invalid Cloudinary response: missing secure_url or public_id");
+  const c = getConfig();
+  if (c) {
+    console.warn(
+      "[Cloudinary] Usando upload firmado (CLOUDINARY_UPLOAD_PRESET no está definido en este entorno). " +
+        "Para evitar Invalid Signature, agregá CLOUDINARY_UPLOAD_PRESET en Vercel."
+    );
+    const { cloudName: cn, apiKey: key, apiSecret: secret } = c;
+    cloudinary.config({ cloud_name: cn, api_key: key, api_secret: secret });
+    const folder = process.env.CLOUDINARY_FOLDER ?? "toulouse";
+    const b64 = buffer.toString("base64");
+    const dataUri = `data:image/jpeg;base64,${b64}`;
+    const result = await cloudinary.uploader.upload(dataUri, {
+      folder,
+      resource_type: "image",
+    });
+    if (!result?.secure_url || !result?.public_id) {
+      throw new Error("Invalid Cloudinary response: missing secure_url or public_id");
+    }
+    return { url: result.secure_url, publicId: result.public_id };
   }
-  return { url: result.secure_url, publicId: result.public_id };
+
+  throw new Error(
+    "Configurá CLOUDINARY_UPLOAD_PRESET en Vercel (nombre del preset unsigned de Cloudinary) y redeployá. " +
+      "Creá el preset en Cloudinary > Settings > Upload > Upload presets > Add upload preset > Signing Mode: Unsigned."
+  );
 }
 
 /** Upload usando preset no firmado (no usa API Secret). */

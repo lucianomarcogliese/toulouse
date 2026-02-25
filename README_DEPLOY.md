@@ -32,14 +32,23 @@ Configúralas en:
 
 **Para producción: imágenes en Cloudinary**
 
-En Vercel el sistema de archivos es **efímero**, por lo que subir imágenes a `/public/uploads` no es persistente. Para que el panel de fotos funcione en producción, configura Cloudinary:
+En Vercel el sistema de archivos es **efímero**, por lo que subir imágenes a `/public/uploads` no es persistente. Para que el panel de fotos funcione en producción, configurá Cloudinary.
 
-- **`CLOUDINARY_CLOUD_NAME`** – Nombre de tu cloud en el dashboard de Cloudinary
-- **`CLOUDINARY_API_KEY`** – API key
-- **`CLOUDINARY_API_SECRET`** – API secret
+**Recomendado (upload sin firma – evita errores "Invalid Signature"):**
+
+- **`CLOUDINARY_CLOUD_NAME`** – Nombre de tu cloud en el dashboard de Cloudinary  
+- **`CLOUDINARY_API_KEY`** – API key  
+- **`CLOUDINARY_UPLOAD_PRESET`** – Nombre de un **Upload preset unsigned** (crealo en Cloudinary: **Settings → Upload → Upload presets → Add upload preset → Signing Mode: Unsigned**)
+
+Con estas tres variables, las subidas usan el preset y **no** requieren API Secret. Para que el admin pueda **eliminar** fotos también en Cloudinary, agregá:
+
+- **`CLOUDINARY_API_SECRET`** – API secret de la misma cuenta (solo se usa para borrar assets)
+
+**Alternativa (upload firmado):** Si no definís `CLOUDINARY_UPLOAD_PRESET`, la app usa upload firmado con `CLOUDINARY_API_SECRET`. Cualquier error de secret o entorno suele dar "Invalid Signature" en producción; por eso se recomienda usar el preset unsigned.
+
 - **`CLOUDINARY_FOLDER`** (opcional) – Carpeta donde se guardan las imágenes; por defecto `toulouse`
 
-Si estas variables **no** están definidas, la ruta `/api/admin/upload` guarda en **`/public/uploads`** (solo válido en desarrollo local; en Vercel se pierde en cada deploy). En producción debes configurar Cloudinary para que las fotos persistan y la galería las muestre correctamente.
+Si **ninguna** variable de Cloudinary está definida, la ruta `/api/admin/upload` guarda en **`/public/uploads`** (solo válido en desarrollo local; en Vercel se pierde en cada deploy).
 
 > El módulo `lib/env.ts` valida en runtime las variables críticas del servidor y lanza errores claros si faltan.
 
@@ -57,18 +66,26 @@ Si estas variables **no** están definidas, la ruta `/api/admin/upload` guarda e
 
 ### 2. Local con Cloudinary
 
-- Crea una cuenta en [cloudinary.com](https://cloudinary.com) y en el Dashboard anota **Cloud name**, **API Key** y **API Secret**.
-- En `.env.local` añade:
+- Creá una cuenta en [cloudinary.com](https://cloudinary.com) y en el Dashboard anotá **Cloud name**, **API Key** y **API Secret**.
+- **Opción A – Con preset (recomendado, mismo flujo que en Vercel):** En `.env.local`:
+  ```
+  CLOUDINARY_CLOUD_NAME=tu-cloud-name
+  CLOUDINARY_API_KEY=tu-api-key
+  CLOUDINARY_UPLOAD_PRESET=nombre-del-preset-unsigned
+  CLOUDINARY_FOLDER=toulouse
+  ```
+  Creá el preset en Cloudinary: **Settings → Upload → Upload presets → Add upload preset → Signing Mode: Unsigned**.
+- **Opción B – Sin preset (upload firmado):** En `.env.local`:
   ```
   CLOUDINARY_CLOUD_NAME=tu-cloud-name
   CLOUDINARY_API_KEY=tu-api-key
   CLOUDINARY_API_SECRET=tu-api-secret
   CLOUDINARY_FOLDER=toulouse
   ```
-- Reinicia el servidor (`npm run dev`).
-- En **Admin · Fotos**, sube una imagen. En el Dashboard de Cloudinary (Media Library) debe aparecer en la carpeta `toulouse`.
-- Abre `/galeria`: la imagen debe verse con `next/image` (URL de `res.cloudinary.com`).
-- Elimina la foto desde el admin: en Cloudinary el asset debe desaparecer de la Media Library.
+- Reiniciá el servidor (`npm run dev`).
+- En **Admin · Fotos**, subí una imagen. En el Dashboard de Cloudinary (Media Library) debe aparecer en la carpeta `toulouse`.
+- Abrí `/galeria`: la imagen debe verse con `next/image` (URL de `res.cloudinary.com`).
+- Eliminá la foto desde el admin: si tenés `CLOUDINARY_API_SECRET` configurado, en Cloudinary el asset debe desaparecer de la Media Library.
 
 ### 3. Build de producción
 
@@ -105,7 +122,8 @@ En la pestaña **Settings → Environment Variables** del proyecto en Vercel, cr
 - **Cloudinary** (para que el panel de fotos suba y sirva imágenes en producción):
   - `CLOUDINARY_CLOUD_NAME`
   - `CLOUDINARY_API_KEY`
-  - `CLOUDINARY_API_SECRET`
+  - **`CLOUDINARY_UPLOAD_PRESET`** → nombre del preset **unsigned** (recomendado; evita Invalid Signature)
+  - `CLOUDINARY_API_SECRET` → necesario si querés que al borrar una foto desde el admin también se elimine en Cloudinary
   - (Opcional) `CLOUDINARY_FOLDER` → por ejemplo `toulouse`
 - (Opcional) `ADMIN_EMAIL` y `ADMIN_PASSWORD` → solo si vas a reutilizar la ruta de seed en dev; en prod la ruta se desactiva por seguridad.
 
@@ -232,7 +250,7 @@ Usa esta lista rápida antes de considerar el deploy “listo para clientes real
   - Revisaste los logs de Vercel tras el primer deploy por si hay errores de env o DB.
 
 - **Imágenes (Cloudinary en producción)**
-  - En producción, configura `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` y `CLOUDINARY_API_SECRET` para que las fotos subidas desde el admin se guarden en Cloudinary y persistan. Sin ellas, las imágenes irían a `/public/uploads`, que en Vercel **no es persistente** (solo útil en desarrollo local).
+  - En producción, configurá **`CLOUDINARY_UPLOAD_PRESET`** (preset unsigned) junto con `CLOUDINARY_CLOUD_NAME` y `CLOUDINARY_API_KEY` para que las subidas funcionen sin errores de firma. Opcionalmente `CLOUDINARY_API_SECRET` para poder eliminar fotos también en Cloudinary.
   - La galería usa `next/image` con `remotePatterns` para `res.cloudinary.com`; las URLs de Cloudinary se muestran sin errores.
 
 Con todo esto en verde, el proyecto queda listo para funcionar de forma estable en Vercel (u otra plataforma similar) en un entorno de producción.
