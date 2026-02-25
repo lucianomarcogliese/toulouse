@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   },
 };
 
+/** Datos vivos (fotos destacadas, contenido) para que se vean cambios del admin sin redeploy. */
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const content = await getContentMap();
 

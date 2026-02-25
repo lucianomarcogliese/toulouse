@@ -13,6 +13,9 @@ export const metadata: Metadata = {
   },
 };
 
+/** Siempre obtener fotos recientes de la DB (no cachear la página en build). */
+export const dynamic = "force-dynamic";
+
 export default async function GaleriaPage() {
   const photos = await getGalleryPhotos();
   return <GalleryClient photos={photos} />;
