@@ -1,6 +1,7 @@
 import GalleryClient from "@/components/GalleryClient";
 import { getGalleryPhotos } from "@/lib/photos";
 import type { Metadata } from "next";
+import { unstable_noStore } from "next/cache";
 
 export const metadata: Metadata = {
   title: "Galería",
@@ -13,10 +14,12 @@ export const metadata: Metadata = {
   },
 };
 
-/** Siempre obtener fotos recientes de la DB (no cachear la página en build). */
+/** Siempre obtener fotos recientes de la DB (no cachear en build ni en request). */
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function GaleriaPage() {
+  unstable_noStore();
   const photos = await getGalleryPhotos();
   return <GalleryClient photos={photos} />;
 }
