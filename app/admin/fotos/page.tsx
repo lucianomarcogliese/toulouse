@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Container from "@/components/Container";
 import type { Photo } from "@/types";
@@ -41,7 +41,7 @@ export default function AdminFotosPage() {
     return () => clearTimeout(t);
   }, [toast]);
 
-  async function load() {
+  const loadRef = useCallback(async () => {
     setLoading(true);
     const res = await fetch("/api/admin/photos", { cache: "no-store" });
 
@@ -53,11 +53,11 @@ export default function AdminFotosPage() {
     const data = await res.json().catch(() => ({}));
     setPhotos(data.photos ?? []);
     setLoading(false);
-  }
+  }, [router]);
 
   useEffect(() => {
-    load();
-  }, []);
+    queueMicrotask(() => loadRef());
+  }, [loadRef]);
 
   useEffect(() => {
     return () => {
@@ -148,7 +148,7 @@ export default function AdminFotosPage() {
       setPreviewUrl(null);
     }
     setCreatePhase("idle");
-    await load();
+    await loadRef();
     showToast("Foto agregada");
   }
 
@@ -172,7 +172,7 @@ export default function AdminFotosPage() {
       return;
     }
 
-    await load();
+    await loadRef();
     setDeletingId(null);
     showToast("Foto eliminada");
   }
@@ -199,7 +199,7 @@ export default function AdminFotosPage() {
       return;
     }
 
-    await load();
+    await loadRef();
     setTogglingId(null);
     showToast(p.featured ? "Quitada de destacadas" : "Marcada como destacada");
   }
@@ -258,7 +258,7 @@ export default function AdminFotosPage() {
       setSavingId(null);
       return;
     }
-    await load();
+    await loadRef();
     setEditing((prev) => {
       const next = { ...prev };
       delete next[p.id];
@@ -282,7 +282,7 @@ export default function AdminFotosPage() {
     }
     const data = await res.json().catch(() => ({}));
     if (!res.ok && !data?.ok) showToast(data?.error ?? "No se pudo reordenar.");
-    await load();
+    await loadRef();
     setReorderingId(null);
     if (res.ok && data?.ok) showToast(direction === "up" ? "Subido" : "Bajado");
   }

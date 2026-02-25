@@ -12,14 +12,14 @@ export async function POST(req: Request) {
     const parsed = contactFormSchema.safeParse(body);
     if (!parsed.success) {
       const msg = parsed.error.issues.map((e) => `${e.path.join(".")}: ${e.message}`).join("; ") || "Faltan datos obligatorios.";
-      return Response.json({ error: msg }, { status: 400 });
+      return Response.json({ ok: false, error: msg }, { status: 400 });
     }
     const { nombre, email, mensaje, website } = parsed.data;
 
     const ip = getClientIp(req);
     if (!checkContactRateLimit(ip)) {
       return Response.json(
-        { error: "Demasiados intentos. Probá en unos minutos." },
+        { ok: false, error: "Demasiados intentos. Probá en unos minutos." },
         { status: 429 }
       );
     }
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("CONTACT API ERROR:", error);
     return Response.json(
-      { error: "Error enviando el mensaje." },
+      { ok: false, error: "Error enviando el mensaje." },
       { status: 500 }
     );
   }

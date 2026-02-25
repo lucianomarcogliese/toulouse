@@ -50,6 +50,16 @@ Con estas tres variables, las subidas usan el preset y **no** requieren API Secr
 
 Si **ninguna** variable de Cloudinary está definida, la ruta `/api/admin/upload` guarda en **`/public/uploads`** (solo válido en desarrollo local; en Vercel se pierde en cada deploy).
 
+**Comportamiento dev vs prod**
+
+| Aspecto | Desarrollo | Producción (Vercel) |
+|--------|------------|----------------------|
+| **Upload** | Si hay vars Cloudinary → Cloudinary; si no → `public/uploads` | Debe usarse Cloudinary (vars configuradas). Sin ellas, los archivos irían a disco efímero y se pierden. |
+| **Respuesta upload** | `{ ok: true, url, publicId }` (Cloudinary) o `{ ok: true, url, publicId: null }` (local) | `{ ok: true, url, publicId }` desde Cloudinary. |
+| **Límites** | Máx. 8 MB por archivo. Solo JPEG, PNG o WebP. | Igual. |
+| **Borrar foto** | Si tiene `cloudinaryId` → se borra en Cloudinary (si hay API Secret). Si `src` es `/uploads/...` → se borra el archivo local. | Siempre con Cloudinary: se borra el registro en DB y el asset en Cloudinary (con `CLOUDINARY_API_SECRET`). No se usa `/uploads` en prod. |
+| **Imágenes en el sitio** | `next/image` sirve URLs de `res.cloudinary.com` (configurado en `next.config.ts` con `remotePatterns`). | Igual. |
+
 > El módulo `lib/env.ts` valida en runtime las variables críticas del servidor y lanza errores claros si faltan.
 
 ---
@@ -153,6 +163,8 @@ Si `npm run build` falla, revisa las variables de entorno requeridas (`RESEND_AP
 
 ## Migraciones y seed en producción
 
+Para pasos detallados (comandos, crear admin, backup/restore) ver **`docs/DB_RUNBOOK.md`**.
+
 ### Migraciones (Prisma)
 
 En producción debes aplicar las migraciones Prisma sobre la base de datos Postgres.
@@ -253,5 +265,18 @@ Usa esta lista rápida antes de considerar el deploy “listo para clientes real
   - En producción, configurá **`CLOUDINARY_UPLOAD_PRESET`** (preset unsigned) junto con `CLOUDINARY_CLOUD_NAME` y `CLOUDINARY_API_KEY` para que las subidas funcionen sin errores de firma. Opcionalmente `CLOUDINARY_API_SECRET` para poder eliminar fotos también en Cloudinary.
   - La galería usa `next/image` con `remotePatterns` para `res.cloudinary.com`; las URLs de Cloudinary se muestran sin errores.
 
+- **QA manual**
+  - Checklist paso a paso en **`docs/QA_CHECKLIST.md`** (Home, Galería, Sobre, Servicios, Contacto, Admin, formulario de contacto, rate limit, honeypot).
+
+- **SEO y previews**
+  - Metadata global y por página, sitemap, robots y imagen OG documentados en **`docs/SEO_NOTES.md`**. Verificar en producción `/sitemap.xml`, `/robots.txt` y `/opengraph-image`.
+
 Con todo esto en verde, el proyecto queda listo para funcionar de forma estable en Vercel (u otra plataforma similar) en un entorno de producción.
 
+---
+
+## Limitaciones y notas
+
+- **Middleware:** Next.js puede mostrar un aviso de deprecación del archivo `middleware` en favor de "proxy". El proyecto sigue funcionando con la convención actual hasta que se migre.
+- **Lint:** La carpeta `scripts/` está excluida de ESLint (p. ej. `scripts/create-admin.cjs` usa `require` por compatibilidad con Node directo).
+- **Rate limit de contacto:** Implementado en memoria por proceso. En Vercel (serverless) cada instancia tiene su propio contador; para un límite global estricto haría falta un almacén externo (Redis, etc.).

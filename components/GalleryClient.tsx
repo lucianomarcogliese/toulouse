@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import Container from "@/components/Container";
 import type { GalleryPhoto } from "@/types";
 
@@ -12,6 +12,7 @@ type Props = {
 export default function GalleryClient({ photos }: Props) {
   const [active, setActive] = useState<string>("Todos");
   const [selected, setSelected] = useState<GalleryPhoto | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const categories = useMemo(() => {
     const set = new Set<string>();
@@ -33,6 +34,27 @@ export default function GalleryClient({ photos }: Props) {
     return list;
   }, [active, photos]);
 
+  // Modal: scroll lock y foco al abrir
+  useEffect(() => {
+    if (selected) {
+      document.body.style.overflow = "hidden";
+      closeButtonRef.current?.focus();
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [selected]);
+
+  // Cerrar con ESC
+  useEffect(() => {
+    if (!selected) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setSelected(null);
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [selected]);
+
   return (
     <main className="min-h-screen py-24 md:py-32">
       <Container>
@@ -43,7 +65,7 @@ export default function GalleryClient({ photos }: Props) {
           <p className="mt-6 text-base leading-relaxed text-stone-600">
             Una selección de proyectos. Filtrá por ambiente para explorar.
           </p>
-          <p className="mt-2 text-sm leading-relaxed text-stone-500">
+          <p className="mt-2 text-sm leading-relaxed text-stone-600">
             Curamos cada imagen para mostrar la atmósfera real de cada espacio.
           </p>
         </header>
@@ -99,7 +121,7 @@ export default function GalleryClient({ photos }: Props) {
         </div>
 
         {photos.length === 0 ? (
-          <p className="mt-12 text-sm text-stone-500">
+          <p className="mt-12 text-sm text-stone-600">
             Todavía no hay fotos cargadas.
           </p>
         ) : null}
@@ -110,6 +132,7 @@ export default function GalleryClient({ photos }: Props) {
             className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4"
             role="dialog"
             aria-modal="true"
+            aria-labelledby="modal-title"
             onClick={() => setSelected(null)}
           >
             <div
@@ -118,14 +141,19 @@ export default function GalleryClient({ photos }: Props) {
             >
               <div className="flex items-center justify-between border-b border-stone-100 px-6 py-4">
                 <div>
-                  <div className="text-sm font-medium">{selected.title}</div>
+                  <div id="modal-title" className="text-sm font-medium">
+                    {selected.title}
+                  </div>
                   <div className="mt-1 text-xs text-stone-500">
                     {selected.category}
                   </div>
                 </div>
                 <button
-                  className="rounded-full border border-stone-200 px-4 py-2 text-xs font-medium text-stone-600 transition hover:bg-stone-50"
+                  ref={closeButtonRef}
+                  type="button"
+                  className="rounded-full border border-stone-200 px-4 py-2 text-xs font-medium text-stone-600 transition hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-stone-300 focus:ring-offset-2"
                   onClick={() => setSelected(null)}
+                  aria-label="Cerrar"
                 >
                   Cerrar
                 </button>

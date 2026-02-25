@@ -1,6 +1,8 @@
+/** Lista de variables de entorno requeridas en servidor (usado para el tipo RequiredServerEnvKey). */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- used for type RequiredServerEnvKey
 const REQUIRED_SERVER_ENV = ["RESEND_API_KEY", "SESSION_SECRET", "DATABASE_URL"] as const;
 
-type RequiredServerEnvKey = (typeof REQUIRED_SERVER_ENV)[number];
+export type RequiredServerEnvKey = (typeof REQUIRED_SERVER_ENV)[number];
 
 type NodeEnv = "development" | "test" | "production";
 

@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { cookies } from "next/headers";
 import { env } from "@/lib/env";
+import { getClientIp, checkLoginRateLimit } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 
@@ -26,28 +27,36 @@ async function readCredentials(req: Request) {
   // JSON
   const body = await req.json().catch(() => ({}));
   return {
-    email: String((body as any)?.email ?? "").trim(),
-    password: String((body as any)?.password ?? ""),
+    email: String((body as { email?: string })?.email ?? "").trim(),
+    password: String((body as { password?: string })?.password ?? ""),
   };
 }
 
 export async function POST(req: Request) {
   try {
+    const ip = getClientIp(req);
+    if (!checkLoginRateLimit(ip)) {
+      return Response.json(
+        { ok: false, error: "Demasiados intentos. Probá en unos minutos." },
+        { status: 429 }
+      );
+    }
+
     const { email, password } = await readCredentials(req);
 
     if (!email || !password) {
-      return Response.json({ error: "Faltan datos" }, { status: 400 });
+      return Response.json({ ok: false, error: "Faltan datos" }, { status: 400 });
     }
 
     const user = await prisma.adminUser.findUnique({ where: { email } });
 
     if (!user) {
-      return Response.json({ error: "Credenciales inválidas" }, { status: 401 });
+      return Response.json({ ok: false, error: "Credenciales inválidas" }, { status: 401 });
     }
 
     const valid = await bcrypt.compare(password, user.passwordHash);
     if (!valid) {
-      return Response.json({ error: "Credenciales inválidas" }, { status: 401 });
+      return Response.json({ ok: false, error: "Credenciales inválidas" }, { status: 401 });
     }
 
     const rawToken = crypto.randomBytes(32).toString("hex");
@@ -82,6 +91,6 @@ export async function POST(req: Request) {
     return Response.json({ ok: true });
   } catch (error) {
     console.error("LOGIN ERROR:", error);
-    return Response.json({ error: "Error del servidor" }, { status: 500 });
+    return Response.json({ ok: false, error: "Error del servidor" }, { status: 500 });
   }
 }

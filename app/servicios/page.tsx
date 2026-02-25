@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Servicios",
   description:
     "Diseño integral, planificación y ejecución. Diseño residencial, comercial, asesoría y dirección de obra.",
+  alternates: { canonical: "/servicios" },
   openGraph: {
     title: "Servicios | TOULOUSE — Diseño de interiores",
     description:

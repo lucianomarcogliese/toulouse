@@ -15,7 +15,7 @@ export async function PATCH(
   try {
     const { id } = await params;
     const body = await req.json().catch(() => ({}));
-    const featured = Boolean((body as any)?.featured);
+    const featured = Boolean((body as { featured?: boolean })?.featured);
 
     const photo = await prisma.photo.update({
       where: { id },
@@ -23,11 +23,12 @@ export async function PATCH(
     });
 
     return Response.json({ ok: true, photo });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("FEATURED PATCH ERROR:", err);
 
     // Prisma "record not found"
-    if (err?.code === "P2025") {
+    const code = (err as { code?: string })?.code;
+    if (code === "P2025") {
       return Response.json(
         { ok: false, error: "Foto no encontrada (id inválido)." },
         { status: 404 }
@@ -35,7 +36,7 @@ export async function PATCH(
     }
 
     return Response.json(
-      { ok: false, error: err?.message ?? "No se pudo actualizar." },
+      { ok: false, error: "No se pudo actualizar." },
       { status: 500 }
     );
   }

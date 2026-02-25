@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Inicio",
   description:
     "Estudio de diseño de interiores con calma y carácter. Proyectos residenciales y comerciales. Concepto, selección de materiales y dirección de obra.",
+  alternates: { canonical: "/" },
   openGraph: {
     title: "Inicio | TOULOUSE — Diseño de interiores",
     description:
@@ -83,15 +84,11 @@ export default async function HomePage() {
         <Container>
           <div className="max-w-4xl">
             <h1 className="font-serif text-[56px] leading-[1.05] tracking-tight md:text-[72px]">
-              Diseño de interiores
-              <br />
-              con calma y carácter
+              {heroTitle}
             </h1>
 
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-neutral-600">
-              Proyectos residenciales y comerciales. Concepto, selección de
-              materiales y dirección de obra con una estética atemporal
-              y una ejecución cuidada.
+              {heroSubtitle}
             </p>
 
             <p className="mt-4 text-sm tracking-[0.18em] text-stone-500 uppercase">

@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Galería",
   description:
     "Proyectos de diseño de interiores del estudio Toulouse. Residencial, comercial y dirección de obra.",
+  alternates: { canonical: "/galeria" },
   openGraph: {
     title: "Galería | TOULOUSE — Diseño de interiores",
     description: "Proyectos de diseño de interiores del estudio Toulouse.",

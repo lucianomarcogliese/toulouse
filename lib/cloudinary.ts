@@ -31,6 +31,7 @@ function ensureConfigured(): { cloudName: string; apiKey: string; apiSecret: str
  * Si CLOUDINARY_UPLOAD_PRESET está definido, usa upload unsigned (no requiere API Secret).
  * Si no hay preset, usa upload firmado (requiere API Secret correcto).
  */
+// _filename reservado para futura lógica (ej. extensión)
 export async function uploadImage(
   buffer: Buffer,
   _filename: string

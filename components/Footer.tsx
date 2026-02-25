@@ -13,7 +13,7 @@ export default function Footer() {
 
           <div className="flex flex-wrap gap-6 text-sm">
             <a
-              className="text-stone-500 transition duration-200 hover:text-stone-900"
+              className="rounded-sm text-stone-500 transition duration-200 hover:text-stone-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-300 focus-visible:ring-offset-2"
               href="#"
               target="_blank"
               rel="noreferrer"
@@ -21,7 +21,7 @@ export default function Footer() {
               Instagram
             </a>
             <a
-              className="text-stone-500 transition duration-200 hover:text-stone-900"
+              className="rounded-sm text-stone-500 transition duration-200 hover:text-stone-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-300 focus-visible:ring-offset-2"
               href="https://wa.me/5491112345678"
               target="_blank"
               rel="noreferrer"
@@ -29,7 +29,7 @@ export default function Footer() {
               WhatsApp
             </a>
             <a
-              className="text-stone-500 transition duration-200 hover:text-stone-900"
+              className="rounded-sm text-stone-500 transition duration-200 hover:text-stone-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-300 focus-visible:ring-offset-2"
               href="mailto:hola@toulouse.com"
             >
               Email

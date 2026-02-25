@@ -51,3 +51,41 @@ export function checkContactRateLimit(ip: string): boolean {
   entry.count += 1;
   return true;
 }
+
+// --- Rate limit para /api/admin/login (brute force) ---
+
+const LOGIN_WINDOW_MS = 10 * 60 * 1000; // 10 min
+const LOGIN_MAX_ATTEMPTS = 10;
+
+const loginStore = new Map<string, Entry>();
+
+function pruneLogin() {
+  const now = Date.now();
+  for (const [key, entry] of loginStore.entries()) {
+    if (entry.resetAt <= now) loginStore.delete(key);
+  }
+}
+
+/**
+ * Devuelve true si el intento de login está permitido, false si se excedió el límite por IP.
+ * Cuenta cada intento (éxito o fallo). Llamar al inicio del POST de login.
+ */
+export function checkLoginRateLimit(ip: string): boolean {
+  pruneLogin();
+  const now = Date.now();
+  const entry = loginStore.get(ip);
+
+  if (!entry) {
+    loginStore.set(ip, { count: 1, resetAt: now + LOGIN_WINDOW_MS });
+    return true;
+  }
+
+  if (entry.resetAt <= now) {
+    loginStore.set(ip, { count: 1, resetAt: now + LOGIN_WINDOW_MS });
+    return true;
+  }
+
+  if (entry.count >= LOGIN_MAX_ATTEMPTS) return false;
+  entry.count += 1;
+  return true;
+}

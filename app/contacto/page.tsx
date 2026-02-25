@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Contacto",
   description:
     "Contactá al estudio Toulouse para tu proyecto de interiorismo. Consultas, presupuestos y coordinación de primera charla.",
+  alternates: { canonical: "/contacto" },
   openGraph: {
     title: "Contacto | TOULOUSE — Diseño de interiores",
     description:

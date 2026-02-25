@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Sobre nosotros",
   description:
     "Estudio de diseño de interiores enfocado en espacios serenos, cálidos y funcionales. Proceso claro de punta a punta.",
+  alternates: { canonical: "/sobre" },
   openGraph: {
     title: "Sobre Toulouse | TOULOUSE — Diseño de interiores",
     description:

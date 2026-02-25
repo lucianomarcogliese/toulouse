@@ -37,7 +37,7 @@ export default function ContactForm() {
         return;
       }
   
-      let data: any = {};
+      let data: { error?: string } = {};
       try {
         data = await res.json();
       } catch {
@@ -64,7 +64,12 @@ export default function ContactForm() {
         Dejanos tus datos y una breve descripción. Te respondemos a la brevedad.
       </p>
 
-      <form className="relative mt-8 space-y-5" onSubmit={onSubmit}>
+      <form
+        className="relative mt-8 space-y-5"
+        onSubmit={onSubmit}
+        aria-busy={loading}
+        aria-describedby={error ? "contact-error" : ok === true ? "contact-success" : undefined}
+      >
         <div>
           <label className="text-sm font-medium text-stone-700" htmlFor="nombre">
             Nombre
@@ -115,18 +120,23 @@ export default function ContactForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-full bg-stone-900 px-6 py-3.5 text-sm font-medium text-white shadow-sm transition duration-300 hover:opacity-95 hover:shadow-md disabled:opacity-50"
+          className="w-full rounded-full bg-stone-900 px-6 py-3.5 text-sm font-medium text-white shadow-sm transition duration-300 hover:opacity-95 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-stone-300 focus:ring-offset-2"
+          aria-busy={loading}
         >
           {loading ? "Enviando..." : "Enviar"}
         </button>
 
         {ok === true ? (
-          <p className="text-sm text-stone-600">
+          <p id="contact-success" className="text-sm text-stone-600" role="status" aria-live="polite">
             ¡Mensaje enviado! Te respondemos pronto.
           </p>
         ) : null}
 
-        {ok === false ? <p className="text-sm text-red-600">{error}</p> : null}
+        {ok === false ? (
+          <p id="contact-error" className="text-sm text-red-600" role="alert" aria-live="assertive">
+            {error}
+          </p>
+        ) : null}
       </form>
     </div>
   );

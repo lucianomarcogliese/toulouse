@@ -76,7 +76,7 @@ export async function DELETE(
         try {
           await fs.unlink(filePath);
         } catch (e) {
-          console.warn("CONTACT DELETE: no se pudo borrar archivo físico:", filePath, e);
+          console.warn("PHOTO DELETE: no se pudo borrar archivo local:", filePath, e);
         }
       }
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Container from "@/components/Container";
 import { CONTENT_KEY_SPECS } from "@/lib/contentKeys";
@@ -17,7 +17,7 @@ export default function AdminTextosPage() {
 
   const ordered = useMemo(() => CONTENT_KEY_SPECS, []);
 
-  async function load() {
+  const loadRef = useCallback(async () => {
     setLoading(true);
     setMsg(null);
 
@@ -35,11 +35,11 @@ export default function AdminTextosPage() {
 
     setBlocks(map);
     setLoading(false);
-  }
+  }, [router]);
 
   useEffect(() => {
-    load();
-  }, []);
+    queueMicrotask(() => loadRef());
+  }, [loadRef]);
 
   async function saveOne(key: string, value: string) {
     setSaving(key);

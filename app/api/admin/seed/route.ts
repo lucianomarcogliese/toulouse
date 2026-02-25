@@ -20,7 +20,7 @@ export async function POST() {
 
   const existing = await prisma.adminUser.findUnique({ where: { email } });
   if (existing) {
-    return Response.json({ ok: true, message: "Admin ya existe" });
+    return Response.json({ ok: true, message: "Admin ya existe" }); // idempotente
   }
 
   const passwordHash = await bcrypt.hash(password, 10);

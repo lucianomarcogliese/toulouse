@@ -42,6 +42,7 @@ export const metadata: Metadata = {
     siteName,
     title: siteName,
     description: defaultDescription,
+    url: "/",
     images: [
       {
         url: "/opengraph-image",

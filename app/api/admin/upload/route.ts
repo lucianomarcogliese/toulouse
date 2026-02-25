@@ -5,6 +5,9 @@ import { isCloudinaryConfigured, uploadImage } from "@/lib/cloudinary";
 
 export const runtime = "nodejs";
 
+const MAX_FILE_SIZE_BYTES = 8 * 1024 * 1024; // 8 MB
+const ALLOWED_MIMETYPES = ["image/jpeg", "image/png", "image/webp"];
+
 export async function POST(req: Request) {
   const auth = await requireAdmin();
   if (!auth.ok) {
@@ -18,6 +21,21 @@ export async function POST(req: Request) {
     if (!file || !(file instanceof File)) {
       return Response.json(
         { ok: false, error: "Falta archivo." },
+        { status: 400 }
+      );
+    }
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      return Response.json(
+        { ok: false, error: "El archivo no puede superar 8 MB." },
+        { status: 400 }
+      );
+    }
+
+    const mime = (file.type || "").toLowerCase();
+    if (!ALLOWED_MIMETYPES.includes(mime)) {
+      return Response.json(
+        { ok: false, error: "Solo se permiten imágenes JPEG, PNG o WebP." },
         { status: 400 }
       );
     }
@@ -36,7 +54,7 @@ export async function POST(req: Request) {
     const safeName = `${Date.now()}-${file.name}`.replaceAll(" ", "-");
     const outPath = path.join(uploadsDir, safeName);
     await fs.writeFile(outPath, buffer);
-    return Response.json({ ok: true, url: `/uploads/${safeName}` });
+    return Response.json({ ok: true, url: `/uploads/${safeName}`, publicId: null });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error("UPLOAD ERROR:", err);

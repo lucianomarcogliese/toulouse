@@ -24,7 +24,7 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
         <Link
           href="/"
-          className="text-sm font-semibold tracking-[0.35em] uppercase text-stone-900"
+          className="text-sm font-semibold tracking-[0.35em] uppercase text-stone-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-300 focus-visible:ring-offset-2 rounded-sm"
         >
           TOULOUSE
         </Link>
@@ -35,7 +35,7 @@ export default function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`text-sm transition duration-200 ${
+              className={`text-sm transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-300 focus-visible:ring-offset-2 rounded-sm ${
                 isActive(item.href)
                   ? "text-stone-900 underline underline-offset-8"
                   : "text-stone-600 hover:text-stone-900"
@@ -48,10 +48,10 @@ export default function Navbar() {
 
         {/* Mobile button */}
         <button
-          className="md:hidden rounded-full border border-stone-200 px-4 py-2 text-xs font-medium text-stone-700 shadow-sm"
+          className="md:hidden rounded-full border border-stone-200 px-4 py-2 text-xs font-medium text-stone-700 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-300 focus-visible:ring-offset-2"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
-          aria-label="Abrir menú"
+          aria-label={open ? "Cerrar menú" : "Abrir menú"}
         >
           Menú
         </button>
@@ -67,7 +67,7 @@ export default function Navbar() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className={`py-2 text-sm ${
+                  className={`py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-stone-300 focus-visible:ring-offset-2 rounded-sm ${
                     isActive(item.href)
                       ? "text-stone-900 underline underline-offset-8"
                       : "text-stone-600"
