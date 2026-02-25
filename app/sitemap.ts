@@ -1,8 +1,8 @@
 import type { MetadataRoute } from "next";
 import { getBaseUrl } from "@/lib/site";
-import { getGalleryPhotos } from "@/lib/photos";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = getBaseUrl();
@@ -16,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${base}/galeria`,
-      lastModified: await getLastModifiedGaleria(),
+      lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.9,
     },
@@ -41,14 +41,4 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   return staticRoutes;
-}
-
-async function getLastModifiedGaleria(): Promise<Date> {
-  try {
-    const photos = await getGalleryPhotos();
-    const latest = photos[0];
-    return latest?.createdAt ?? new Date();
-  } catch {
-    return new Date();
-  }
 }
