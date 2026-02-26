@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useMemo, useState, useRef, useEffect } from "react";
 import Container from "@/components/Container";
 import type { GalleryPhoto } from "@/types";
+import { getPhotoAlt } from "@/lib/photoAlt";
 
 type Props = {
   photos: GalleryPhoto[];
@@ -101,7 +102,7 @@ export default function GalleryClient({ photos }: Props) {
               <div className="relative aspect-square">
                 <Image
                   src={p.src}
-                  alt={p.title}
+                  alt={getPhotoAlt(p)}
                   fill
                   className="object-cover transition duration-300 group-hover:scale-[1.03]"
                   sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
@@ -162,7 +163,7 @@ export default function GalleryClient({ photos }: Props) {
               <div className="relative aspect-[16/10] w-full bg-stone-100">
                 <Image
                   src={selected.src}
-                  alt={selected.title}
+                  alt={getPhotoAlt(selected)}
                   fill
                   className="object-cover"
                   sizes="(max-width: 896px) 100vw, 896px"

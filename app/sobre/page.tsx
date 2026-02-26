@@ -3,6 +3,7 @@ import Image from "next/image";
 import fs from "fs";
 import path from "path";
 import { getContentMap, pick } from "@/lib/content";
+import WhatsAppCTA from "@/components/WhatsAppCTA";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -80,7 +81,7 @@ export default async function SobrePage() {
   const pageText = pick(
     content,
     "about.text",
-    "Somos un estudio de diseño de interiores enfocado en crear espacios serenos, cálidos y funcionales. Acompañamos cada proyecto de punta a punta: desde la idea hasta la ejecución, con un proceso claro y transparente."
+    "Somos un estudio de diseño de interiores enfocado en crear espacios serenos, cálidos y funcionales. No hacemos decoración de catálogo: cada proyecto arranca desde tu espacio y tu manera de vivir. Acompañamos de punta a punta con un proceso claro y transparente."
   );
 
   const enfoqueTitle = pick(content, "about.enfoque.title", "Nuestro enfoque");
@@ -156,7 +157,7 @@ export default async function SobrePage() {
               <>
                 <Image
                   src={aboutImageSrc}
-                  alt="Proyecto del estudio Toulouse"
+                  alt="Proyecto de interiorismo del estudio Toulouse Design en Zona Norte"
                   fill
                   className="object-cover"
                   priority
@@ -251,6 +252,11 @@ export default async function SobrePage() {
             </Link>
           </div>
         </section>
+        <WhatsAppCTA
+          title="¿Preferís escribir por WhatsApp?"
+          description="Contanos en un mensaje tu proyecto o duda y te respondemos en el día. Ideal para coordinar una primera reunión."
+          variant="light"
+        />
       </div>
     </main>
   );

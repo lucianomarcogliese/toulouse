@@ -36,20 +36,20 @@ function validateBasicAuth(authHeader: string | null): boolean {
   }
 }
 
-/** Añade X-Robots-Tag noindex,nofollow cuando el sitio está en modo privado. */
-function maybeAddNoIndex(res: NextResponse): NextResponse {
-  if (isPrivateMode) {
+/** Añade X-Robots-Tag noindex,nofollow cuando el sitio está en modo privado o la ruta es /admin. */
+function maybeAddNoIndex(res: NextResponse, pathname: string): NextResponse {
+  if (isPrivateMode || pathname.startsWith("/admin")) {
     res.headers.set("X-Robots-Tag", "noindex, nofollow");
   }
   return res;
 }
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // 1) Rutas que siempre pasan (assets, robots, sitemap, api)
   if (isAllowedWithoutAuth(pathname)) {
-    return maybeAddNoIndex(NextResponse.next());
+    return maybeAddNoIndex(NextResponse.next(), pathname);
   }
 
   // 2) En modo privado: Basic Auth global (solo si SITE_USER y SITE_PASS están definidos)
@@ -61,7 +61,7 @@ export function middleware(req: NextRequest) {
           "WWW-Authenticate": 'Basic realm="Sitio en modo privado", charset="UTF-8"',
         },
       });
-      return maybeAddNoIndex(res);
+      return maybeAddNoIndex(res, pathname);
     }
   }
 
@@ -69,21 +69,21 @@ export function middleware(req: NextRequest) {
   if (pathname === "/galeria") {
     const res = NextResponse.next();
     res.headers.set("Cache-Control", "private, no-store, max-age=0");
-    return maybeAddNoIndex(res);
+    return maybeAddNoIndex(res, pathname);
   }
 
   // 4) Admin: redirigir a login si no hay cookie de sesión
   if (pathname.startsWith("/admin")) {
-    if (pathname === "/admin/login") return maybeAddNoIndex(NextResponse.next());
+    if (pathname === "/admin/login") return maybeAddNoIndex(NextResponse.next(), pathname);
     const token = req.cookies.get("admin_session")?.value;
     if (!token) {
       const url = req.nextUrl.clone();
       url.pathname = "/admin/login";
-      return maybeAddNoIndex(NextResponse.redirect(url));
+      return maybeAddNoIndex(NextResponse.redirect(url), pathname);
     }
   }
 
-  return maybeAddNoIndex(NextResponse.next());
+  return maybeAddNoIndex(NextResponse.next(), pathname);
 }
 
 export const config = {

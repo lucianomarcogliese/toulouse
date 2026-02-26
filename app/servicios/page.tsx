@@ -1,5 +1,6 @@
 import { getContentMap, pick } from "@/lib/content";
 import Link from "next/link";
+import WhatsAppCTA from "@/components/WhatsAppCTA";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -21,7 +22,7 @@ export default async function ServiciosPage() {
   const subtitle = pick(
     content,
     "services.subtitle",
-    "Diseño integral, planificación y ejecución con foco en funcionalidad y estética."
+    "Diseño integral con foco en funcionalidad y estética atemporal. Planificación y ejecución en Zona Norte y CABA."
   );
 
   const cards = [
@@ -141,6 +142,11 @@ export default async function ServiciosPage() {
             </li>
           </ul>
         </section>
+        <WhatsAppCTA
+          title="¿Querés hablar con nosotros?"
+          description="Escribinos por WhatsApp y te contamos cómo trabajamos. Respuesta rápida y sin compromiso."
+          variant="light"
+        />
       </div>
     </main>
   );

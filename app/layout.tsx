@@ -4,7 +4,10 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SeoSchema from "@/components/SeoSchema";
+import WhatsAppFloat from "@/components/WhatsAppFloat";
+import InstagramFloat from "@/components/InstagramFloat";
 import Container from "@/components/Container";
+import { Analytics } from "@vercel/analytics/react";
 import { getBaseUrl } from "@/lib/site";
 
 const geistSans = Geist({
@@ -71,10 +74,13 @@ export default function RootLayout({
       >
         <SeoSchema />
         <Navbar />
-        <main className="flex-1">
+        <main className="flex-1 pb-24 md:pb-28">
           <Container>{children}</Container>
         </main>
         <Footer />
+        <InstagramFloat />
+        <WhatsAppFloat />
+        {process.env.NODE_ENV === "production" ? <Analytics /> : null}
       </body>
     </html>
   );

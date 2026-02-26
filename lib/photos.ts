@@ -1,4 +1,7 @@
 import { prisma } from "./prisma";
+import { getPhotoAlt } from "./photoAlt";
+
+export { getPhotoAlt };
 
 const photoOrderBy = [{ sortOrder: "asc" as const }, { createdAt: "desc" as const }];
 

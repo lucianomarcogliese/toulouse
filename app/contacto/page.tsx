@@ -29,7 +29,7 @@ export default async function ContactoPage() {
   const cardText = pick(
     content,
     "contact.card.text",
-    "Coordinamos una primera charla para entender necesidades, estilo y presupuesto estimado."
+    "Coordinamos una primera charla para entender necesidades, estilo y presupuesto estimado. Sin compromiso; te respondemos en el día."
   );
 
   const email = pick(content, "contact.email", "hola@toulouse.com");

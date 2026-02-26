@@ -18,6 +18,7 @@ Configúralas en:
 - **`DATABASE_URL`**
   - Dev (SQLite): por ejemplo `file:./dev.db`
   - Prod (Postgres): por ejemplo `postgresql://USER:PASSWORD@HOST:PORT/DB_NAME?schema=public`
+  - **Neon:** Si ves errores "PostgreSQL connection: Closed", la base puede estar suspendida (plan free). Añadí a la URL: `&connect_timeout=30` (ej: `...neondb?sslmode=require&connect_timeout=30`) para dar tiempo a que reactive. También podés "despertar" la base desde el dashboard de Neon.
 - **`RESEND_API_KEY`**
   - API key de Resend para `/api/contact`
 - **`SESSION_SECRET`**
@@ -302,6 +303,6 @@ Con todo esto en verde, el proyecto queda listo para funcionar de forma estable 
 
 ## Limitaciones y notas
 
-- **Middleware:** Next.js puede mostrar un aviso de deprecación del archivo `middleware` en favor de "proxy". El proyecto sigue funcionando con la convención actual hasta que se migre.
+- **Proxy:** El proyecto usa la convención `proxy.ts` (Next.js 16). La lógica de Basic Auth, admin y noindex vive ahí.
 - **Lint:** La carpeta `scripts/` está excluida de ESLint (p. ej. `scripts/create-admin.cjs` usa `require` por compatibilidad con Node directo).
 - **Rate limit de contacto:** Implementado en memoria por proceso. En Vercel (serverless) cada instancia tiene su propio contador; para un límite global estricto haría falta un almacén externo (Redis, etc.).

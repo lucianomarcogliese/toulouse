@@ -47,7 +47,7 @@ export default function ContactForm() {
       setOk(false);
       setError(data?.error ?? `Error ${res.status}. Probá de nuevo.`);
     } catch (err) {
-      console.error("FETCH ERROR:", err);
+      if (process.env.NODE_ENV === "development") console.error("FETCH ERROR:", err);
       setOk(false);
       setError("Error de red. Probá de nuevo.");
     } finally {
@@ -61,7 +61,7 @@ export default function ContactForm() {
         Contanos de tu proyecto
       </h2>
       <p className="mt-3 text-stone-600">
-        Dejanos tus datos y una breve descripción. Te respondemos a la brevedad.
+        Dejanos tus datos y una breve descripción. Te respondemos en el día, sin compromiso.
       </p>
 
       <form

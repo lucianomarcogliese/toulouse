@@ -20,15 +20,15 @@ Protege **todo el sitio** con usuario y contraseña (HTTP Basic Auth) antes de m
 2. Agregá dos variables (por ejemplo solo para **Production**):
    - **`SITE_USER`** → usuario que querés usar (ej. `toulouse`)
    - **`SITE_PASS`** → contraseña (ej. una clave fuerte)
-3. **Redeploy** el proyecto para que el middleware use las nuevas variables.
+3. **Redeploy** el proyecto para que el proxy use las nuevas variables.
 
 A partir de ese momento, en producción el sitio pedirá usuario y contraseña al cargar cualquier página.
 
 ## Cómo desactivarlo
 
-**Opción A (recomendada):** Borrá las variables **`SITE_USER`** y **`SITE_PASS`** en Vercel (Environment Variables) y hacé un **Redeploy**. Si no están definidas, el middleware no aplica Basic Auth y el sitio queda abierto.
+**Opción A (recomendada):** Borrá las variables **`SITE_USER`** y **`SITE_PASS`** en Vercel (Environment Variables) y hacé un **Redeploy**. Si no están definidas, el proxy no aplica Basic Auth y el sitio queda abierto.
 
-**Opción B:** En el código, comentá o eliminá el bloque de Basic Auth en `middleware.ts` (el `if (!validateBasicAuth(...))` y el `return new NextResponse(...)`), o ajustá el `matcher` para que el middleware no se ejecute en las rutas que quieras dejar públicas.
+**Opción B:** En el código, comentá o eliminá el bloque de Basic Auth en `proxy.ts` (el `if (!validateBasicAuth(...))` y el `return new NextResponse(...)`), o ajustá el `matcher` para que el proxy no se ejecute en las rutas que quieras dejar públicas.
 
 ## Variables de entorno
 
@@ -48,7 +48,7 @@ En local, si **no** definís estas variables, el sitio no pide Basic Auth (ideal
 
 ## Bloquear también las APIs
 
-Por defecto las rutas `/api/*` están **excluidas** del Basic Auth para que el formulario de contacto y el login del admin sigan funcionando. Si querés que las APIs también exijan Basic Auth, en `middleware.ts` comentá la línea que permite `/api/` en `isAllowedWithoutAuth` y descomentá la que las bloquea (ahí hay un comentario en el código).
+Por defecto las rutas `/api/*` están **excluidas** del Basic Auth para que el formulario de contacto y el login del admin sigan funcionando. Si querés que las APIs también exijan Basic Auth, en `proxy.ts` comentá la línea que permite `/api/` en `isAllowedWithoutAuth` y descomentá la que las bloquea (ahí hay un comentario en el código).
 
 ## Resumen
 

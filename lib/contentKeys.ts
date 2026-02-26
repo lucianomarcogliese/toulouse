@@ -14,6 +14,7 @@ export const CONTENT_KEY_SPECS: ContentKeySpec[] = [
   // HOME
   { key: "home.title", label: "Home · Título", help: "Título principal del hero." },
   { key: "home.subtitle", label: "Home · Subtítulo", help: "Texto debajo del título.", multiline: true },
+  { key: "home.byline", label: "Home · Frase de cierre", help: "Línea corta bajo Zona Norte (ej: Espacios pensados para durar.)", multiline: false },
   { key: "home.heroImage", label: "Home · Imagen principal", help: "Ruta: /uploads/xxx.jpg o /proyectos/01.jpeg" },
 
   // SERVICIOS

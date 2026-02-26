@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Container from "@/components/Container";
+import { getPhotoAlt } from "@/lib/photoAlt";
 import type { Photo } from "@/types";
 
 const categories = ["Sillas", "Cortinas", "Sillones", "Mesas", "Lámparas"];
@@ -316,6 +317,9 @@ export default function AdminFotosPage() {
             <form className="mt-6 space-y-4" onSubmit={onCreate}>
               <div>
                 <label className="text-sm font-medium">Título</label>
+                <p className="mt-1 text-xs text-stone-500">
+                  Descriptivo para SEO (ej: Sillón a medida en living moderno Zona Norte)
+                </p>
                 <input
                   name="title"
                   required
@@ -447,7 +451,7 @@ export default function AdminFotosPage() {
                       )}
                       <Image
                         src={p.src}
-                        alt={p.title}
+                        alt={getPhotoAlt(p)}
                         fill
                         className="object-cover"
                         sizes="(max-width: 1024px) 50vw, 33vw"

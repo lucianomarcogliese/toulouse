@@ -29,7 +29,7 @@ export default function Footer() {
               ))}
             </nav>
             <div className="text-sm text-stone-500">
-              © {year} TOULOUSE. Diseño de interiores.
+              © {year} TOULOUSE. Proyectos con calma y carácter. Zona Norte y CABA.
             </div>
           </div>
 

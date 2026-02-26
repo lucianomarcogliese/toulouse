@@ -3,8 +3,10 @@ import Link from "next/link";
 import Button from "@/components/button";
 import Container from "@/components/Container";
 import Section from "@/components/Section";
+import WhatsAppCTA from "@/components/WhatsAppCTA";
+import HeroWhatsAppMicrocopy from "@/components/HeroWhatsAppMicrocopy";
 import { getContentMap, pick } from "@/lib/content";
-import { getFeaturedPhotos } from "@/lib/photos";
+import { getFeaturedPhotos, getPhotoAlt } from "@/lib/photos";
 import { STATIC_IMAGE_BLUR } from "@/lib/blur";
 import type { Metadata } from "next";
 import type { GalleryPhoto } from "@/types";
@@ -27,16 +29,21 @@ export const dynamic = "force-dynamic";
 export default async function HomePage() {
   const content = await getContentMap();
 
-  // HERO
+  // HERO — Claridad inmediata: qué hacemos, dónde, para quién
   const heroTitle = pick(
     content,
     "home.title",
-    "Diseño de interiores con calma, luz y carácter"
+    "Diseño de interiores boutique en Zona Norte"
   );
   const heroSubtitle = pick(
     content,
     "home.subtitle",
-    "Proyectos residenciales y comerciales. Concepto, selección de materiales y dirección de obra con una estética atemporal."
+    "Proyectos residenciales y comerciales con calma y carácter."
+  );
+  const heroByline = pick(
+    content,
+    "home.byline",
+    "Espacios pensados para durar, no para la foto del momento."
   );
 
   // SECCIÓN SERVICIOS
@@ -83,23 +90,28 @@ export default async function HomePage() {
 
   return (
     <main>
-      {/* Hero */}      
-      <section className="pt-28 pb-20">
+      {/* Hero — Más compacto en móvil, botón principal destacado */}
+      <section className="pt-20 pb-12 md:pt-28 md:pb-20">
         <Container>
           <div className="max-w-4xl">
-            <h1 className="font-serif text-[56px] leading-[1.05] tracking-tight md:text-[72px]">
+            <h1 className="font-serif text-4xl leading-[1.08] tracking-tight text-stone-900 md:text-[56px] md:leading-[1.05] lg:text-[72px]">
               {heroTitle}
             </h1>
 
-            <p className="mt-8 max-w-2xl text-lg leading-relaxed text-neutral-600">
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-neutral-600 md:mt-8">
               {heroSubtitle}
             </p>
 
-            <p className="mt-4 text-sm tracking-[0.18em] text-stone-500 uppercase">
-              Estudio de interiorismo boutique
+            <p className="mt-3 text-sm tracking-[0.18em] text-stone-500 uppercase md:mt-4">
+              Zona Norte y CABA
             </p>
+            {heroByline ? (
+              <p className="mt-1 text-sm italic text-stone-500 md:mt-2">
+                {heroByline}
+              </p>
+            ) : null}
 
-            <div className="mt-10 flex flex-wrap gap-4">
+            <div className="mt-8 flex flex-wrap gap-3 md:mt-10 md:gap-4">
               <Button href="/contacto" variant="primary">
                 Agendar consulta
               </Button>
@@ -107,13 +119,14 @@ export default async function HomePage() {
                 Ver proyectos
               </Button>
             </div>
+            <HeroWhatsAppMicrocopy />
           </div>
 
-          <div className="mt-20 overflow-hidden rounded-3xl border border-neutral-200">
+          <div className="mt-14 overflow-hidden rounded-3xl border border-neutral-200 md:mt-20">
             <div className="relative aspect-[16/9] w-full">
               <Image
                 src={heroImage}
-                alt="Proyecto Toulouse"
+                alt="Proyecto de interiorismo del estudio Toulouse Design: living o espacio comercial en Zona Norte y CABA"
                 fill
                 className="object-cover"
                 priority
@@ -153,21 +166,17 @@ export default async function HomePage() {
         </div>
       </Section>
 
-      {/* Áreas de cobertura — keywords naturales para SEO */}
+      {/* Áreas de cobertura — poco texto, mucho aire */}
       <Section
         title="Dónde trabajamos"
-        subtitle="Atendemos proyectos de diseño de interiores en Zona Norte y CABA."
+        subtitle="Zona Norte y CABA."
         className="bg-stone-50/50"
       >
-        <div className="mx-auto max-w-2xl text-center">
+        <div className="mx-auto max-w-xl text-center">
           <p className="text-base leading-relaxed text-stone-600">
-            Nuestro estudio de interiorismo está enfocado en la Zona Norte del Gran Buenos Aires y en
-            CABA. Realizamos proyectos residenciales y comerciales: desde la concepción del espacio
-            hasta la dirección de obra, con una estética atemporal y materiales de calidad. Si
-            buscás diseño de interiores en Buenos Aires, podemos coordinar una primera charla para
-            conocer tu espacio y tus necesidades.
+            Trabajamos en Zona Norte y CABA de punta a punta: desde la primera charla hasta el cierre de obra. Una persona de referencia por proyecto.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
+          <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2">
             <Link
               href="/servicios"
               className="text-sm font-medium text-stone-700 underline underline-offset-4 hover:text-stone-900"
@@ -225,7 +234,7 @@ export default async function HomePage() {
                 <div className="relative aspect-square">
                   <Image
                     src={p.src}
-                    alt={p.title}
+                    alt={getPhotoAlt(p)}
                     fill
                     className="object-cover"
                     sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
@@ -272,6 +281,54 @@ export default async function HomePage() {
           </div>
         )}
       </Section>
+
+      {/* Confianza — números e ideas cortas */}
+      <Section
+        title="Confianza y experiencia"
+        subtitle="Rigor y cercanía en cada proyecto. Una persona de referencia desde el primer día hasta la entrega."
+        className="border-t border-stone-200/80 bg-stone-50/50"
+      >
+        <div className="grid gap-6 md:grid-cols-3 md:gap-8">
+          <div
+            className="rounded-2xl bg-white p-6 shadow-sm transition duration-300 hover:shadow-md md:p-8 animate-fade-in-hero"
+            style={{ animationDelay: "0.1s" }}
+          >
+            <p className="font-serif text-3xl font-semibold tracking-tight text-stone-900 md:text-4xl">
+              +50
+            </p>
+            <p className="mt-1 text-base font-medium text-stone-700">
+              proyectos realizados
+            </p>
+          </div>
+          <div
+            className="rounded-2xl bg-white p-6 shadow-sm transition duration-300 hover:shadow-md md:p-8 animate-fade-in-hero"
+            style={{ animationDelay: "0.2s" }}
+          >
+            <p className="font-serif text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+              Atención personalizada
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-stone-600">
+              Una persona de referencia por proyecto.
+            </p>
+          </div>
+          <div
+            className="rounded-2xl bg-white p-6 shadow-sm transition duration-300 hover:shadow-md md:p-8 animate-fade-in-hero"
+            style={{ animationDelay: "0.3s" }}
+          >
+            <p className="font-serif text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+              Dirección integral de obra
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-stone-600">
+              Coordinación y control de calidad hasta el cierre.
+            </p>
+          </div>
+        </div>
+      </Section>
+      <WhatsAppCTA
+        title="¿Consultas sobre tu proyecto?"
+        description="Escribinos por WhatsApp y te respondemos en el día. Contanos el ambiente o la idea y coordinamos una primera charla."
+        variant="light"
+      />
     </main>
   );
 }
