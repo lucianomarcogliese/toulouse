@@ -1,16 +1,13 @@
 import type { MetadataRoute } from "next";
 import { getBaseUrl } from "@/lib/site";
+import { isPrivateMode } from "@/lib/siteMode";
 
 export default function robots(): MetadataRoute.Robots {
   const base = getBaseUrl();
 
-  if (process.env.NODE_ENV === "production") {
+  if (isPrivateMode) {
     return {
-      rules: {
-        userAgent: "*",
-        disallow: "/",
-      },
-      // No incluir sitemap en modo bloqueo (sitio no indexable)
+      rules: { userAgent: "*", disallow: "/" },
     };
   }
 

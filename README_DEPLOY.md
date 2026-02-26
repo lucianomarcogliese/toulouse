@@ -30,6 +30,14 @@ Configúralas en:
 - **`ADMIN_PASSWORD`**
   - Password en texto plano que se hashea al crear el admin desde `/api/admin/seed` (solo dev)
 
+**Modo del sitio (privado vs público)**
+
+- **`NEXT_PUBLIC_SITE_MODE`**
+  - `private` → Sitio protegido con Basic Auth (si están definidos `SITE_USER` y `SITE_PASS`) y **no indexable** (header `X-Robots-Tag: noindex, nofollow` y `robots.txt` con `Disallow: /`).
+  - `public` → Sitio **sin** protección de sitio y **indexable** para SEO (`robots.txt` permite `/`, bloquea `/admin/` y `/api/`, e incluye sitemap).
+  - Si no se define la variable, se considera modo público (sitio accesible e indexable).
+  - **Requiere redeploy** (en Vercel o local reiniciar el servidor) para que un cambio de valor surta efecto.
+
 **Para producción: imágenes en Cloudinary**
 
 En Vercel el sistema de archivos es **efímero**, por lo que subir imágenes a `/public/uploads` no es persistente. Para que el panel de fotos funcione en producción, configurá Cloudinary.
@@ -61,6 +69,23 @@ Si **ninguna** variable de Cloudinary está definida, la ruta `/api/admin/upload
 | **Imágenes en el sitio** | `next/image` sirve URLs de `res.cloudinary.com` (configurado en `next.config.ts` con `remotePatterns`). | Igual. |
 
 > El módulo `lib/env.ts` valida en runtime las variables críticas del servidor y lanza errores claros si faltan.
+
+---
+
+## Modo del sitio
+
+El sitio puede funcionar en modo **privado** o **público** según la variable de entorno `NEXT_PUBLIC_SITE_MODE`:
+
+| Valor     | Comportamiento |
+|----------|----------------|
+| `private` | Sitio protegido con Basic Auth (si `SITE_USER` y `SITE_PASS` están definidos) y **no indexable**: header `X-Robots-Tag: noindex, nofollow` y `robots.txt` con `Disallow: /`. |
+| `public`  | Sitio **sin** protección de sitio y **indexable** para SEO: `robots.txt` permite `/`, bloquea `/admin/` y `/api/`, e incluye la URL del sitemap. |
+
+Si no se define `NEXT_PUBLIC_SITE_MODE`, se asume modo **público** (sitio accesible e indexable).
+
+Para que el modo **privado** pida usuario y contraseña, debes definir también **`SITE_USER`** y **`SITE_PASS`** (credenciales de Basic Auth). Sin ellas, el modo privado solo aplica no indexación (robots y header), sin pantalla de login.
+
+**Importante:** Cualquier cambio en esta variable requiere **redeploy** (en Vercel, un nuevo deploy; en local, reiniciar el servidor con `npm run dev`) para que surta efecto.
 
 ---
 

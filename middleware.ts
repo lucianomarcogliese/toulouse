@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { isPrivateMode } from "@/lib/siteMode";
 
 /** Rutas que nunca requieren Basic Auth (assets, sitemap, robots). */
 function isAllowedWithoutAuth(pathname: string): boolean {
@@ -35,43 +36,54 @@ function validateBasicAuth(authHeader: string | null): boolean {
   }
 }
 
+/** Añade X-Robots-Tag noindex,nofollow cuando el sitio está en modo privado. */
+function maybeAddNoIndex(res: NextResponse): NextResponse {
+  if (isPrivateMode) {
+    res.headers.set("X-Robots-Tag", "noindex, nofollow");
+  }
+  return res;
+}
+
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // 1) Rutas que siempre pasan (assets, robots, sitemap, api)
   if (isAllowedWithoutAuth(pathname)) {
-    return NextResponse.next();
+    return maybeAddNoIndex(NextResponse.next());
   }
 
-  // 2) Basic Auth global (solo si SITE_USER y SITE_PASS están definidos)
-  if (!validateBasicAuth(req.headers.get("authorization"))) {
-    return new NextResponse("Autenticación requerida", {
-      status: 401,
-      headers: {
-        "WWW-Authenticate": 'Basic realm="Sitio en modo privado", charset="UTF-8"',
-      },
-    });
+  // 2) En modo privado: Basic Auth global (solo si SITE_USER y SITE_PASS están definidos)
+  if (isPrivateMode) {
+    if (!validateBasicAuth(req.headers.get("authorization"))) {
+      const res = new NextResponse("Autenticación requerida", {
+        status: 401,
+        headers: {
+          "WWW-Authenticate": 'Basic realm="Sitio en modo privado", charset="UTF-8"',
+        },
+      });
+      return maybeAddNoIndex(res);
+    }
   }
 
   // 3) Galería: no cachear para que siempre muestre fotos actualizadas
   if (pathname === "/galeria") {
     const res = NextResponse.next();
     res.headers.set("Cache-Control", "private, no-store, max-age=0");
-    return res;
+    return maybeAddNoIndex(res);
   }
 
   // 4) Admin: redirigir a login si no hay cookie de sesión
   if (pathname.startsWith("/admin")) {
-    if (pathname === "/admin/login") return NextResponse.next();
+    if (pathname === "/admin/login") return maybeAddNoIndex(NextResponse.next());
     const token = req.cookies.get("admin_session")?.value;
     if (!token) {
       const url = req.nextUrl.clone();
       url.pathname = "/admin/login";
-      return NextResponse.redirect(url);
+      return maybeAddNoIndex(NextResponse.redirect(url));
     }
   }
 
-  return NextResponse.next();
+  return maybeAddNoIndex(NextResponse.next());
 }
 
 export const config = {
