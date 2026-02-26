@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
 
 const nav = [
+  { label: "Inicio", href: "/" },
   { label: "Galería", href: "/galeria" },
   { label: "Servicios", href: "/servicios" },
   { label: "Sobre", href: "/sobre" },
@@ -16,7 +17,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   const isActive = useMemo(() => {
-    return (href: string) => pathname === href;
+    return (href: string) => (href === "/" ? pathname === "/" : pathname === href);
   }, [pathname]);
 
   return (

@@ -6,12 +6,12 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Contacto",
   description:
-    "Contactá al estudio Toulouse para tu proyecto de interiorismo. Consultas, presupuestos y coordinación de primera charla.",
+    "Contactá a Toulouse Design para tu proyecto de interiorismo. Consultas y presupuestos. Zona norte y CABA. Coordinamos una primera charla.",
   alternates: { canonical: "/contacto" },
   openGraph: {
-    title: "Contacto | TOULOUSE — Diseño de interiores",
+    title: "Toulouse Design — Contacto",
     description:
-      "Contactá al estudio Toulouse para tu proyecto de interiorismo.",
+      "Contactá al estudio Toulouse Design para tu proyecto de interiorismo. Zona norte y CABA.",
   },
 };
 

@@ -1,15 +1,16 @@
 import { getContentMap, pick } from "@/lib/content";
+import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Servicios",
   description:
-    "Diseño integral, planificación y ejecución. Diseño residencial, comercial, asesoría y dirección de obra.",
+    "Diseño integral de interiores: residencial, comercial, asesoría y dirección de obra. Zona norte y CABA. Planificación y ejecución con estética atemporal.",
   alternates: { canonical: "/servicios" },
   openGraph: {
-    title: "Servicios | TOULOUSE — Diseño de interiores",
+    title: "Toulouse Design — Servicios",
     description:
-      "Diseño integral, planificación y ejecución para hogares y espacios comerciales.",
+      "Diseño integral, planificación y ejecución para hogares y espacios comerciales en zona norte y CABA.",
   },
 };
 
@@ -87,6 +88,59 @@ export default async function ServiciosPage() {
             </div>
           ))}
         </div>
+
+        <section className="mt-24 border-t border-stone-200 pt-16" aria-labelledby="categorias-heading">
+          <h2 id="categorias-heading" className="font-serif text-2xl font-semibold tracking-tight text-stone-900 md:text-3xl">
+            Diseño por categoría
+          </h2>
+          <p className="mt-3 max-w-2xl text-base leading-relaxed text-stone-600">
+            Trabajamos todas las piezas del espacio: mobiliario, cortinas, iluminación y mesas para
+            un resultado coherente con tu estilo.
+          </p>
+          <ul className="mt-10 space-y-12">
+            <li id="sillones">
+              <h3 className="font-serif text-xl font-semibold text-stone-900">Sillones y asientos</h3>
+              <p className="mt-2 text-stone-600">
+                Selección y diseño de sillones, sofás y butacas que definen el confort del living y
+                de espacios comerciales. Medidas, telas y estilos a medida para tu proyecto de
+                interiorismo.
+              </p>
+              <Link href="/galeria" className="mt-2 inline-block text-sm font-medium text-stone-700 underline underline-offset-4 hover:text-stone-900">
+                Ver en galería
+              </Link>
+            </li>
+            <li id="cortinas">
+              <h3 className="font-serif text-xl font-semibold text-stone-900">Cortinas</h3>
+              <p className="mt-2 text-stone-600">
+                Cortinas y telones para control de luz y privacidad. Desde telas livianas hasta
+                blackout, con instalación y asesoría en diseño de interiores para Zona Norte y CABA.
+              </p>
+              <Link href="/galeria" className="mt-2 inline-block text-sm font-medium text-stone-700 underline underline-offset-4 hover:text-stone-900">
+                Ver en galería
+              </Link>
+            </li>
+            <li id="iluminacion">
+              <h3 className="font-serif text-xl font-semibold text-stone-900">Iluminación</h3>
+              <p className="mt-2 text-stone-600">
+                Iluminación general, de ambiente y puntual. Lámparas de pie, de techo y apliques
+                que integran función y estética en proyectos residenciales y comerciales.
+              </p>
+              <Link href="/galeria" className="mt-2 inline-block text-sm font-medium text-stone-700 underline underline-offset-4 hover:text-stone-900">
+                Ver en galería
+              </Link>
+            </li>
+            <li id="mesas">
+              <h3 className="font-serif text-xl font-semibold text-stone-900">Mesas y superficies</h3>
+              <p className="mt-2 text-stone-600">
+                Mesas de living, comedor y apoyo; materiales nobles y diseños que se adaptan al
+                espacio. Incluimos en la propuesta integral de diseño de interiores.
+              </p>
+              <Link href="/galeria" className="mt-2 inline-block text-sm font-medium text-stone-700 underline underline-offset-4 hover:text-stone-900">
+                Ver en galería
+              </Link>
+            </li>
+          </ul>
+        </section>
       </div>
     </main>
   );

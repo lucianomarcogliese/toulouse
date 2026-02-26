@@ -3,7 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SeoSchema from "@/components/SeoSchema";
 import Container from "@/components/Container";
+import { getBaseUrl } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,22 +17,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const siteName = "TOULOUSE — Diseño de interiores";
+const siteName = "Toulouse Design";
+const defaultTitle = "Toulouse Design — Estudio de interiorismo boutique";
 const defaultDescription =
-  "Estudio de diseño de interiores. Proyectos residenciales y comerciales. Concepto, selección de materiales y dirección de obra con una estética atemporal.";
-
-/** Base URL para metadata y sitemap (producción: dominio real; dev: localhost). */
-function getBaseUrl(): string {
-  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return "http://localhost:3000";
-}
+  "Estudio de interiorismo boutique. Proyectos residenciales y comerciales en zona norte y CABA. Concepto, materiales y dirección de obra con estética atemporal.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseUrl()),
   title: {
-    default: siteName,
-    template: `%s | ${siteName}`,
+    default: defaultTitle,
+    template: `${siteName} — %s`,
   },
   description: defaultDescription,
   icons: {
@@ -40,23 +36,23 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_ES",
     siteName,
-    title: siteName,
+    title: defaultTitle,
     description: defaultDescription,
     url: "/",
     images: [
       {
-        url: "/opengraph-image",
+        url: "/og.jpg",
         width: 1200,
         height: 630,
-        alt: "Toulouse — Diseño de interiores",
+        alt: "Toulouse Design — Estudio de interiorismo boutique",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: siteName,
+    title: defaultTitle,
     description: defaultDescription,
-    images: ["/opengraph-image"],
+    images: ["/og.jpg"],
   },
   alternates: {
     canonical: "/",
@@ -73,6 +69,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col bg-[var(--background)] antialiased`}
       >
+        <SeoSchema />
         <Navbar />
         <main className="flex-1">
           <Container>{children}</Container>

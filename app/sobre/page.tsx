@@ -8,12 +8,12 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Sobre nosotros",
   description:
-    "Estudio de diseño de interiores enfocado en espacios serenos, cálidos y funcionales. Proceso claro de punta a punta.",
+    "Estudio Toulouse Design: interiorismo enfocado en espacios serenos y funcionales. Zona norte y CABA. Proceso claro de punta a punta.",
   alternates: { canonical: "/sobre" },
   openGraph: {
-    title: "Sobre Toulouse | TOULOUSE — Diseño de interiores",
+    title: "Toulouse Design — Sobre nosotros",
     description:
-      "Estudio de diseño de interiores enfocado en espacios serenos, cálidos y funcionales.",
+      "Estudio de interiorismo enfocado en espacios serenos, cálidos y funcionales. Zona norte y CABA.",
   },
 };
 

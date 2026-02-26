@@ -6,11 +6,11 @@ import { unstable_noStore } from "next/cache";
 export const metadata: Metadata = {
   title: "Galería",
   description:
-    "Proyectos de diseño de interiores del estudio Toulouse. Residencial, comercial y dirección de obra.",
+    "Proyectos de interiorismo del estudio Toulouse Design. Residencial y comercial en zona norte y CABA. Fotos de trabajos realizados.",
   alternates: { canonical: "/galeria" },
   openGraph: {
-    title: "Galería | TOULOUSE — Diseño de interiores",
-    description: "Proyectos de diseño de interiores del estudio Toulouse.",
+    title: "Toulouse Design — Galería",
+    description: "Proyectos de interiorismo del estudio Toulouse Design.",
   },
 };
 

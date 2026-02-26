@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import Button from "@/components/button";
 import Container from "@/components/Container";
 import Section from "@/components/Section";
@@ -11,12 +12,12 @@ import type { GalleryPhoto } from "@/types";
 export const metadata: Metadata = {
   title: "Inicio",
   description:
-    "Estudio de diseño de interiores con calma y carácter. Proyectos residenciales y comerciales. Concepto, selección de materiales y dirección de obra.",
+    "Estudio de interiorismo boutique en zona norte y CABA. Proyectos residenciales y comerciales con calma y carácter. Concepto, materiales y dirección de obra.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Inicio | TOULOUSE — Diseño de interiores",
+    title: "Toulouse Design — Inicio",
     description:
-      "Estudio de diseño de interiores con calma y carácter. Proyectos residenciales y comerciales.",
+      "Estudio de interiorismo boutique. Proyectos residenciales y comerciales en zona norte y CABA.",
   },
 };
 
@@ -149,6 +150,62 @@ export default async function HomePage() {
               </p>
             </div>
           ))}
+        </div>
+      </Section>
+
+      {/* Áreas de cobertura — keywords naturales para SEO */}
+      <Section
+        title="Dónde trabajamos"
+        subtitle="Atendemos proyectos de diseño de interiores en Zona Norte y CABA."
+        className="bg-stone-50/50"
+      >
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-base leading-relaxed text-stone-600">
+            Nuestro estudio de interiorismo está enfocado en la Zona Norte del Gran Buenos Aires y en
+            CABA. Realizamos proyectos residenciales y comerciales: desde la concepción del espacio
+            hasta la dirección de obra, con una estética atemporal y materiales de calidad. Si
+            buscás diseño de interiores en Buenos Aires, podemos coordinar una primera charla para
+            conocer tu espacio y tus necesidades.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <Link
+              href="/servicios"
+              className="text-sm font-medium text-stone-700 underline underline-offset-4 hover:text-stone-900"
+            >
+              Ver servicios
+            </Link>
+            <Link
+              href="/contacto"
+              className="text-sm font-medium text-stone-700 underline underline-offset-4 hover:text-stone-900"
+            >
+              Contacto
+            </Link>
+            <span className="text-stone-400">·</span>
+            <Link
+              href="/servicios#sillones"
+              className="text-sm font-medium text-stone-700 underline underline-offset-4 hover:text-stone-900"
+            >
+              Sillones
+            </Link>
+            <Link
+              href="/servicios#cortinas"
+              className="text-sm font-medium text-stone-700 underline underline-offset-4 hover:text-stone-900"
+            >
+              Cortinas
+            </Link>
+            <Link
+              href="/servicios#iluminacion"
+              className="text-sm font-medium text-stone-700 underline underline-offset-4 hover:text-stone-900"
+            >
+              Iluminación
+            </Link>
+            <Link
+              href="/servicios#mesas"
+              className="text-sm font-medium text-stone-700 underline underline-offset-4 hover:text-stone-900"
+            >
+              Mesas
+            </Link>
+          </div>
         </div>
       </Section>
 
