@@ -19,6 +19,7 @@ function WhatsAppIcon({ className }: { className?: string }) {
 
 export default function WhatsAppFloat() {
   const pathname = usePathname();
+  // NEXT_PUBLIC_WHATSAPP_NUMBER se inyecta en build; si cambiás .env.local, reiniciá el dev server.
   const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
 
   if (!number || pathname?.startsWith("/admin")) {
